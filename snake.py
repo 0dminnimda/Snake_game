@@ -2,9 +2,6 @@ import numpy as np
 import cv2 as cv
 from pynput import keyboard
 from pynput.keyboard import Key
-#from multiprocessing import Process, Value, Array
-from multiprocessing import Process, Lock
-from multiprocessing.sharedctypes import Value, Array
 import math as ma
 import time
 import random as ra
@@ -66,8 +63,8 @@ def rand_st(posx,posy):
     return posx,posy
 
 apl_col = (0,255,0)
-my_col = (255,0,255)
-fill_col = (255,0,255)
+my_col = (255,0,0)
+bod_col = (255,0,255)
 not_fill = (50,50,50)
 c_s = 45
 ot = 10
@@ -83,6 +80,7 @@ apl_p = crt_apl(path,n)
 
 #for _ in range(1):
 while 1:
+    args = None
     img = np.zeros((ver,ver, 3), dtype = "uint8")
     #with keyboard.Listener(on_press=on_press,on_release=on_release) as listener:
     #    listener.join()
@@ -95,7 +93,7 @@ while 1:
     #elif press == "ы":
     #    posy += 1
 
-    posx,posy = rand_st(posx,posy)
+    #posx,posy = rand_st(posx,posy)
 
     posx,posy = posx%n,posy%n
     path = move(path,(posx%n,posy%n))
@@ -112,11 +110,9 @@ while 1:
     a = [[0 for y in range(n)]for x in range(n)]
     a = np.array(a)
     a[posx][posy]=-2
-    for i in path:
+    for i in path[1:]:
         a[i[0]][i[1]]=-1
     a[apl_p[0]][apl_p[1]]=-3
-    #a[:1]=-1
-    #print(a)
     for x in range(n):
         for y in range(n):
             x1=(x+1)*c_s+ot*(x+1)
@@ -124,7 +120,7 @@ while 1:
             x2=x*c_s+ot*(x+1)
             y2=y*c_s+ot*(y+1)
             if a[x][y] == -1:
-                cv.rectangle(img,(x1,y1),(x2,y2),fill_col,-1)
+                cv.rectangle(img,(x1,y1),(x2,y2),bod_col,-1)
             elif a[x][y] == -2:
                 cv.rectangle(img,(x1,y1),(x2,y2),my_col,-1)
             elif a[x][y] == -3:
@@ -135,7 +131,3 @@ while 1:
     if cv.waitKey(1) & 0xFF == ord('2'):
         break
     #t = cv.getTrackbarPos("speed", "Tracking")
-    #pr.terminate()
-
-#if __name__ == '__main__':
-#main_f()
