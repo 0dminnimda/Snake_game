@@ -53,6 +53,18 @@ def crt_apl(bad_z,n):
             return apl_p
             break
 
+def rand_st(posx,posy):
+    add = ra.randint(1,4)
+    if add == 1:
+        posx -= 1
+    elif add == 2:
+        posx += 1
+    elif add == 3:
+        posy -= 1
+    elif add == 4:
+        posy += 1
+    return posx,posy
+
 apl_col = (0,255,0)
 my_col = (255,0,255)
 fill_col = (255,0,255)
@@ -67,21 +79,23 @@ path = [(n//2,n//2)]
 m,c = -1,-1
 posx,posy = n//2,n//2
 apl_e = False
-apl_p = (ra.randint(0,n-1),ra.randint(0,n-1))
+apl_p = crt_apl(path,n)
 
 #for _ in range(1):
 while 1:
     img = np.zeros((ver,ver, 3), dtype = "uint8")
-    with keyboard.Listener(on_press=on_press,on_release=on_release) as listener:
-        listener.join()
-    if press == "ф":
-        posx -= 1
-    elif press == "в":
-        posx += 1
-    elif press == "ц":
-        posy -= 1
-    elif press == "ы":
-        posy += 1
+    #with keyboard.Listener(on_press=on_press,on_release=on_release) as listener:
+    #    listener.join()
+    #if press == "ф":
+    #    posx -= 1
+    #elif press == "в":
+    #    posx += 1
+    #elif press == "ц":
+    #    posy -= 1
+    #elif press == "ы":
+    #    posy += 1
+
+    posx,posy = rand_st(posx,posy)
 
     posx,posy = posx%n,posy%n
     path = move(path,(posx%n,posy%n))
