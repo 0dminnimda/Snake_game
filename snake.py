@@ -42,7 +42,17 @@ def move(arr,val):
     arr[0]=val
     return arr
 
-lenth = 1
+def crt_apl(bad_z,n):
+    b = True
+    while 1:
+        apl_p = (ra.randint(0,n-1),ra.randint(0,n-1))
+        for i in bad_z:
+            if apl_p == i:
+                b = False
+        if b == True:
+            return apl_p
+            break
+
 apl_col = (0,255,0)
 my_col = (255,0,255)
 fill_col = (255,0,255)
@@ -53,14 +63,15 @@ n = 11
 ver = n*(c_s+ot)+ot
 #cv.namedWindow("Tracking", cv.WINDOW_NORMAL)
 #cv.createTrackbar("speed", "Tracking", 0, 10, nothing)
-path = [(n//2,n//2) for i in range(lenth)]
+path = [(n//2,n//2)]
 m,c = -1,-1
 posx,posy = n//2,n//2
 apl_e = False
 apl_p = (ra.randint(0,n-1),ra.randint(0,n-1))
+
 #for _ in range(1):
 while 1:
-
+    posx,posy = posx%n,posy%n
     img = np.zeros((ver,ver, 3), dtype = "uint8")
     with keyboard.Listener(on_press=on_press,on_release=on_release) as listener:
         listener.join()
@@ -80,12 +91,13 @@ while 1:
         apl_e = True
 
     if apl_e == True:
-        apl_p = (ra.randint(0,n-1),ra.randint(0,n-1))
+        apl_p = crt_apl(path,n)
         apl_e = False
 
+    print(apl_p,(posx,posy),len(path))
     a = [[0 for y in range(n)]for x in range(n)]
     a = np.array(a)
-    a[posx%n][posy%n]=-2
+    a[posx][posy]=-2
     for i in path:
         a[i[0]][i[1]]=-1
     a[apl_p[0]][apl_p[1]]=-3
