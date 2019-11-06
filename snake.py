@@ -43,7 +43,7 @@ def move(arr,val):
     return arr
 
 lenth = 1
-apl_col = (255,0,0)
+apl_col = (0,255,0)
 my_col = (255,0,255)
 fill_col = (255,0,255)
 not_fill = (50,50,50)
@@ -60,13 +60,6 @@ apl_e = False
 apl_p = (ra.randint(0,n-1),ra.randint(0,n-1))
 #for _ in range(1):
 while 1:
-    if (posx,posy) == apl_p:
-        path.append(path[-1])
-        apl_e = True
-
-    if apl_e == True:
-        apl_p = (ra.randint(0,n-1),ra.randint(0,n-1))
-        apl_e = False
 
     img = np.zeros((ver,ver, 3), dtype = "uint8")
     with keyboard.Listener(on_press=on_press,on_release=on_release) as listener:
@@ -81,6 +74,15 @@ while 1:
         posy += 1
 
     path = move(path,(posx%n,posy%n))
+
+    if (posx,posy) == apl_p:
+        path.append(path[-1])
+        apl_e = True
+
+    if apl_e == True:
+        apl_p = (ra.randint(0,n-1),ra.randint(0,n-1))
+        apl_e = False
+
     a = [[0 for y in range(n)]for x in range(n)]
     a = np.array(a)
     a[posx%n][posy%n]=-2
