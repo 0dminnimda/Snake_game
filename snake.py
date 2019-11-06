@@ -59,7 +59,7 @@ fill_col = (255,0,255)
 not_fill = (50,50,50)
 c_s = 45
 ot = 10
-n = 11
+n = 5
 ver = n*(c_s+ot)+ot
 #cv.namedWindow("Tracking", cv.WINDOW_NORMAL)
 #cv.createTrackbar("speed", "Tracking", 0, 10, nothing)
@@ -71,7 +71,6 @@ apl_p = (ra.randint(0,n-1),ra.randint(0,n-1))
 
 #for _ in range(1):
 while 1:
-    posx,posy = posx%n,posy%n
     img = np.zeros((ver,ver, 3), dtype = "uint8")
     with keyboard.Listener(on_press=on_press,on_release=on_release) as listener:
         listener.join()
@@ -84,6 +83,7 @@ while 1:
     elif press == "ы":
         posy += 1
 
+    posx,posy = posx%n,posy%n
     path = move(path,(posx%n,posy%n))
 
     if (posx,posy) == apl_p:
