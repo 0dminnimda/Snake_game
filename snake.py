@@ -37,13 +37,15 @@ def nothing(x):
 
 def move(arr,val):
     steps = -1
-    arr = arr[steps:] + arr[:steps]
+    if len(arr)!= 1:
+        arr = arr[steps:] + arr[:steps]
     arr[0]=val
     return arr
 
-lenth = 5
-my_col = (0,0,255)
-fill_col = (255,0,0)
+lenth = 1
+apl_col = (255,0,0)
+my_col = (255,0,255)
+fill_col = (255,0,255)
 not_fill = (50,50,50)
 c_s = 45
 ot = 10
@@ -54,9 +56,18 @@ ver = n*(c_s+ot)+ot
 path = [(n//2,n//2) for i in range(lenth)]
 m,c = -1,-1
 posx,posy = n//2,n//2
+apl_e = False
+apl_p = (ra.randint(0,n-1),ra.randint(0,n-1))
 #for _ in range(1):
 while 1:
-    path = move(path,(posx%n,posy%n))
+    if (posx,posy) == apl_p:
+        path.append(path[-1])
+        apl_e = True
+
+    if apl_e == True:
+        apl_p = (ra.randint(0,n-1),ra.randint(0,n-1))
+        apl_e = False
+
     img = np.zeros((ver,ver, 3), dtype = "uint8")
     with keyboard.Listener(on_press=on_press,on_release=on_release) as listener:
         listener.join()
@@ -69,11 +80,13 @@ while 1:
     elif press == "ы":
         posy += 1
 
+    path = move(path,(posx%n,posy%n))
     a = [[0 for y in range(n)]for x in range(n)]
     a = np.array(a)
     a[posx%n][posy%n]=-2
     for i in path:
         a[i[0]][i[1]]=-1
+    a[apl_p[0]][apl_p[1]]=-3
     #a[:1]=-1
     #print(a)
     for x in range(n):
@@ -86,6 +99,8 @@ while 1:
                 cv.rectangle(img,(x1,y1),(x2,y2),fill_col,-1)
             elif a[x][y] == -2:
                 cv.rectangle(img,(x1,y1),(x2,y2),my_col,-1)
+            elif a[x][y] == -3:
+                cv.rectangle(img,(x1,y1),(x2,y2),apl_col,-1)
             else:
                 cv.rectangle(img,(x1,y1),(x2,y2),not_fill,a[x][y])
     cv.imshow("img", img)
