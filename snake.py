@@ -33,10 +33,10 @@ def nothing(x):
     pass
 
 def move(arr,val):
-    ste = 1
-    #if len(arr)!= 1 and arr[0] != arr[1]:
+    ste = -1
+    arr.append(val)
     arr = arr[ste:] + arr[:ste]
-    arr[0]=val
+    #arr[1]=val
     return arr
 
 def move2(arr,val):
@@ -190,12 +190,12 @@ while 1:
 
     
     if pos == apl_p:
-        path = path[0]+move(path[1:], (pos))#path[-1])
-        #path.append(path[-1])
-        print(pos, apl_p, path)
+        print(path)
+        path = [path[0]]+move(path[1:], path[-1])#path[-1])
+        print(path)
         apl_p = crt_apl(path[1:],n)
     else:
-        print(pos, apl_p, path)
+        print(path)
 
     a[apl_p[0]][apl_p[1]]=-1
     #print(pos, apl_p, path)
