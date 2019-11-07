@@ -107,7 +107,7 @@ not_fill = (50,50,50,255)
 sh_col = (0,0,255,100)
 c_s = 48
 ot = 3
-n = 9
+n = 5
 ver = n*(c_s+ot)+ot
 cv.namedWindow("Tracking", cv.WINDOW_NORMAL)
 cv.createTrackbar("len", "Tracking", 0, 25, nothing)
@@ -123,8 +123,19 @@ a = np.array([[0 for y in range(n)]for x in range(n)])
 a[pos[0]][pos[1]]=1
 
 while 1:
+    pos = [pos[0]%n,pos[1]%n]
+    if pos == apl_p:
+        #print(path)
+        path = [path[0]]+move(path[1:], path[0])#path[-1])
+        #print(path)
+        apl_p = crt_apl(path[1:],n)
+    else:
+        print(path)
+
+    a[apl_p[0]][apl_p[1]]=-1
+
     for _ in range(1):
-        old = a.copy()
+        #old = a.copy()
         img = np.zeros((ver,ver, 4), dtype = "uint8")
         for x in range(n):
             for y in range(n):
@@ -143,6 +154,7 @@ while 1:
                 else:
                     cv.rectangle(img,(x1,y1),(x2,y2),not_fill,a[x][y])
         cv.imshow("img", img)
+        print(a)
         a = np.array([[0 for y in range(n)]for x in range(n)])
         if cv.waitKey(1) & 0xFF == ord('2'):
             break
@@ -156,9 +168,9 @@ while 1:
                 del path[-1]
             pass
 
-    #pos, mo = rand_st(pos,n,path[1:],look2,0.05)
+    pos, mo = rand_st(pos,n,path[1:],look2,0.00)
 
-    for _ in range(1):
+    for _ in range(0):
         with keyboard.Listener(on_press=on_press,on_release=on_release) as listener:
             listener.join()
         pos, mo = check(press,pos,n,path[1:],look2)
@@ -189,14 +201,5 @@ while 1:
             a[i[0]][i[1]]=2
 
     
-    if pos == apl_p:
-        print(path)
-        path = [path[0]]+move(path[1:], path[-1])#path[-1])
-        print(path)
-        apl_p = crt_apl(path[1:],n)
-    else:
-        print(path)
-
-    a[apl_p[0]][apl_p[1]]=-1
-    #print(pos, apl_p, path)
+    
 
