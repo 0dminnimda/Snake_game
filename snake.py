@@ -55,19 +55,11 @@ def crt_apl(bad_z,n):
             return apl_p
             break
 
-def rand_st(posx,posy,n,t):
+def rand_st(pos,n,path,lo,t):
     time.sleep(t)
-    add = ra.randint(1,4)
-    if add == 1 and posx != 0:
-        posx -= 1
-    elif add == 2 and posx != n-1:
-        posx += 1
-    elif add == 3 and posy != 0:
-        posy -= 1
-    elif add == 4 and posy != n-1:
-        posy += 1
-    return posx,posy
-#old[pos[1]][old[pos[1]].index(pos[0]-lo[0],pos[1])] > 0:
+    press = ra.choice(["ф","в","ц","ы"])#randint()
+    return check(press,pos,n,path,lo)
+
 def check(press,pos,n,path,lo):
     ch=True
     if len(path) == 1:
@@ -166,9 +158,9 @@ while 1:
             del path[-1]
         pass
 
-    #pos = rand_st(pos[0],pos[1],n,0.1)
+    pos, mo = rand_st(pos,n,path[1:],look2,0.05)
 
-    for _ in range(1):
+    for _ in range(0):
         with keyboard.Listener(on_press=on_press,on_release=on_release) as listener:
             listener.join()
         pos, mo = check(press,pos,n,path[1:],look2)
