@@ -33,9 +33,9 @@ def nothing(x):
     pass
 
 def move(arr,val):
-    steps = -1
-    if len(arr)!= 1 and arr[0] != arr[1]:
-        arr = arr[steps:] + arr[:steps]
+    ste = 1
+    #if len(arr)!= 1 and arr[0] != arr[1]:
+    arr = arr[ste:] + arr[:ste]
     arr[0]=val
     return arr
 
@@ -47,7 +47,7 @@ def move2(arr,val):
 def crt_apl(bad_z,n):
     b = True
     while 1:
-        apl_p = (ra.randint(0,n-1),ra.randint(0,n-1))
+        apl_p = [ra.randint(0,n-1),ra.randint(0,n-1)]
         for i in bad_z:
             if apl_p == i:
                 b = False
@@ -111,18 +111,15 @@ n = 9
 ver = n*(c_s+ot)+ot
 cv.namedWindow("Tracking", cv.WINDOW_NORMAL)
 cv.createTrackbar("len", "Tracking", 0, 25, nothing)
-#path = [0 for i in range(2)]
+cv.createTrackbar("use", "Tracking", 0, 1, nothing)
 path = [0,[n//2,n//2]]
 m,c = -1,-1
 pos = [n//2,n//2]
 look = [[pos[0],pos[1]-1],[pos[0]+1,pos[1]],[pos[0],pos[1]+1]]
 look2 = [0,1,1,1]
-apl_e = False
 apl_p = crt_apl(path,n)
 
 a = np.array([[0 for y in range(n)]for x in range(n)])
-for i in range(0):#len(look)):
-    a[look[i][0]][look[i][1]]=4
 a[pos[0]][pos[1]]=1
 
 while 1:
@@ -150,17 +147,18 @@ while 1:
         if cv.waitKey(1) & 0xFF == ord('2'):
             break
 
-        
-        t = cv.getTrackbarPos("len", "Tracking")
-        if t+2 > len(path):
-            path.append(path[0])
-        elif t+2 < len(path):
-            del path[-1]
-        pass
+        use = cv.getTrackbarPos("use", "Tracking")
+        if bool(use):
+            t = cv.getTrackbarPos("len", "Tracking")
+            if t+2 > len(path):
+                path.append(path[0])
+            elif t+2 < len(path):
+                del path[-1]
+            pass
 
-    pos, mo = rand_st(pos,n,path[1:],look2,0.05)
+    #pos, mo = rand_st(pos,n,path[1:],look2,0.05)
 
-    for _ in range(0):
+    for _ in range(1):
         with keyboard.Listener(on_press=on_press,on_release=on_release) as listener:
             listener.join()
         pos, mo = check(press,pos,n,path[1:],look2)
@@ -184,95 +182,21 @@ while 1:
             look2 = [1,1,1,0]
             pass
 
-    for i in range(0):#len(look)):
-        if -1<look[i][0]<n and -1<look[i][1]<n:
-            a[look[i][0]][look[i][1]]=4
-
     pos = [pos[0]%n,pos[1]%n]
     a[pos[0]][pos[1]]=1
     for i in path[1:-1]:
         if path[0]!=0:
             a[i[0]][i[1]]=2
 
-while 0:
-    a = np.array([[0 for y in range(n)]for x in range(n)])
+    
+    if pos == apl_p:
+        path = path[0]+move(path[1:], (pos))#path[-1])
+        #path.append(path[-1])
+        print(pos, apl_p, path)
+        apl_p = crt_apl(path[1:],n)
+    else:
+        print(pos, apl_p, path)
 
-    if path[1]!=0:
-        dif = (posx-path[1][0],posy-path[1][1])
-        pr = True
+    a[apl_p[0]][apl_p[1]]=-1
+    #print(pos, apl_p, path)
 
-    for _ in range(1):
-        img = np.zeros((ver,ver, 4), dtype = "uint8")
-        with keyboard.Listener(on_press=on_press,on_release=on_release) as listener:
-            listener.join()
-        if press == "ф" and posx != 0:
-            posx -= 1
-        elif press == "в" and posx != n-1:
-            posx += 1
-        elif press == "ц" and posy != 0:
-            posy -= 1
-        elif press == "ы" and posy != n-1:
-            posy += 1
-
-    if pr == True:
-        #dif = (posx-path[1][0],posy-path[1][1])
-        if dif[0] > 0:
-            look = [[posx,posy-1],[posx+1,posy],[posx,posy+1]]
-            print("rig")
-        elif dif[0] < 0:
-            look = [[posx,posy+1],[posx-1,posy],[posx,posy-1]]
-            print("lef")
-        elif dif[1] > 0:
-            look = [[posx+1,posy],[posx,posy+1],[posx-1,posy]]
-            print("down")
-        elif dif[1] < 0:
-            look = [[posx-1,posy],[posx,posy-1],[posx+1,posy]]
-            print("up")
-            pr = False
-
-    for i in range(len(look)):
-        if -1<look[i][0]<n and  -1<look[i][1]<n:
-            a[look[i][0]][look[i][1]]=-4
-
-    #if path[1]!=0:
-       # a[dir_f[0]][dir_f[1]]=-4
-    #posx,posy = rand_st(posx,posy,n)
-
-    posx,posy = posx%n,posy%n
-    path = move(path,(posx,posy))
-
-    if (posx,posy) == apl_p:
-        path.append(path[-1])
-        apl_e = True
-
-    if apl_e == True:
-        apl_p = crt_apl(path,n)
-        apl_e = False
-
-    print(apl_p,(posx,posy),len(path))
-    a[posx][posy]=-2
-    for i in path[1:-1]:
-        a[i[0]][i[1]]=-1
-    a[apl_p[0]][apl_p[1]]=-3
-
-    for x in range(n):
-        for y in range(n):
-            x1=(x+1)*c_s+ot*(x+1)
-            y1=(y+1)*c_s+ot*(y+1)
-            x2=x*c_s+ot*(x+1)
-            y2=y*c_s+ot*(y+1)
-            if a[x][y] == -1:
-                cv.rectangle(img,(x1,y1),(x2,y2),bod_col,-1)
-            elif a[x][y] == -2:
-                cv.rectangle(img,(x1,y1),(x2,y2),my_col,-1)
-            elif a[x][y] == -3:
-                cv.rectangle(img,(x1,y1),(x2,y2),apl_col,-1)
-            elif a[x][y] == -4:
-                cv.rectangle(img,(x1,y1),(x2,y2),sh_col,-1)
-            else:
-                cv.rectangle(img,(x1,y1),(x2,y2),not_fill,a[x][y])
-
-    cv.imshow("img", img)
-    if cv.waitKey(1) & 0xFF == ord('2'):
-        break
-    #t = cv.getTrackbarPos("speed", "Tracking")
