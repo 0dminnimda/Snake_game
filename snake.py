@@ -104,6 +104,8 @@ def check(press,pos,n,path,lo):
                     ch = False
             if ch == True:
                 pos[1] += 1
+        if pos == path[-1]:
+            ch = False
     return pos, ch
 
 apl_col = (0,255,0,255)
