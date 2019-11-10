@@ -57,45 +57,42 @@ def crt_apl(bad_z,n):
 
 def rand_st(pos,n,path,lo,t):
     time.sleep(t)
-    press = ra.choice(["ф","в","ц","ы"])#randint()
-    return check(press,pos,n,path,lo)
+    press = ra.choice([["ф","lef"],["в","rig"],["ц","up"],["ы","dow"]])#randint()
+    print(press[1])
+    return check(press[0],pos,n,path,lo)
 
-def check(press,pos,n,path,lo):
+def che_in(a,path,ch,pos,p1,p2,m):
+    for i in path:
+        if i[0] == pos[0]+p1*m and i[1] == pos[1]+p2*m:
+            ch = False
+    if ch == True:
+        pos[a] += m
+    return pos, ch
+
+def check(press,pos,n,path,lo,rev = False):
+    a1,a2 = 0,1
+    if rev == True:
+        a1,a2 = 1,0
     ch=True
     if len(path) == 1:
-        if press == "ф" and pos[0] != 0:
-            pos[0] -= 1
-        elif press == "в" and pos[0] != n-1:
-            pos[0] += 1
-        elif press == "ц" and pos[1] != 0:
-            pos[1] -= 1
-        elif press == "ы" and pos[1] != n-1:
-            pos[1] += 1
+        if press == "ф" and pos[a1] != 0:
+            pos[a1] -= 1
+        elif press == "в" and pos[a1] != n-1:
+            pos[a1] += 1
+        elif press == "ц" and pos[a2] != 0:
+            pos[a2] -= 1
+        elif press == "ы" and pos[a2] != n-1:
+            pos[a2] += 1
     else:
-        if press == "ф" and pos[0] != 0:
-            for i in path:
-                if i[0] == pos[0]-lo[0] and i[1] == pos[1]:
-                    ch = False
-            if ch == True:
-                pos[0] -= 1
-        elif press == "в" and pos[0] != n-1:
-            for i in path:
-                if i[0] == pos[0]+lo[2] and i[1] == pos[1]:
-                    ch = False
-            if ch == True:
-                pos[0] += 1
-        elif press == "ц" and pos[1] != 0:
-            for i in path:
-                if i[0] == pos[0] and i[1] == pos[1]-lo[1]:
-                    ch = False
-            if ch == True:
-                pos[1] -= 1
-        elif press == "ы" and pos[1] != n-1:
-            for i in path:
-                if i[0] == pos[0] and i[1] == pos[1]+lo[3]:
-                    ch = False
-            if ch == True:
-                pos[1] += 1
+        if press == "ф" and pos[a1] != 0:
+            pos, ch = che_in(a1,path,ch,pos,lo[0],0,-1)
+        elif press == "в" and pos[a1] != n-1:
+            pos, ch = che_in(a1,path,ch,pos,lo[2],0,1)
+        elif press == "ц" and pos[a2] != 0:
+            pos, ch = che_in(a2,path,ch,pos,0,lo[1],-1)
+        elif press == "ы" and pos[a2] != n-1:
+            pos, ch = che_in(a2,path,ch,pos,0,lo[3],1)
+
         if pos == path[-1]:
             ch = False
     return pos, ch
@@ -119,8 +116,8 @@ look = [[pos[0],pos[1]-1],[pos[0]+1,pos[1]],[pos[0],pos[1]+1]]
 look2 = [0,1,1,1]
 apl_p = crt_apl(path,n)
 
-a = np.array([[0 for y in range(n)]for x in range(n)])
-a[pos[0]][pos[1]]=1
+a = np.array([["." for y in range(n)]for x in range(n)])
+a[pos[0]][pos[1]]="#"
 
 while 1:
     pos = [pos[0]%n,pos[1]%n]
@@ -132,30 +129,28 @@ while 1:
     else:
         print(path)
 
-    a[apl_p[0]][apl_p[1]]=-1
+    a[apl_p[0]][apl_p[1]]="@"
 
     for _ in range(1):
         #old = a.copy()
         img = np.zeros((ver,ver, 4), dtype = "uint8")
-        for x in range(n):
-            for y in range(n):
-                x1=(x+1)*c_s+ot*(x+1)
-                y1=(y+1)*c_s+ot*(y+1)
-                x2=x*c_s+ot*(x+1)
-                y2=y*c_s+ot*(y+1)
-                if a[x][y] == 1:
-                    cv.rectangle(img,(x1,y1),(x2,y2),my_col,-1)
-                elif a[x][y] == 2:
-                    cv.rectangle(img,(x1,y1),(x2,y2),bod_col,-1)
-                elif a[x][y] == -1:
-                    cv.rectangle(img,(x1,y1),(x2,y2),apl_col,-1)
+        for y in range(n):
+            for x in range(n):
+                xy1=((x+1)*c_s+ot*(x+1), (y+1)*c_s+ot*(y+1))
+                xy2=(x*c_s+ot*(x+1), y*c_s+ot*(y+1))
+                if a[x][y] == "#":
+                    cv.rectangle(img, xy1, xy2, my_col, -1)
+                elif a[x][y] == "0":
+                    cv.rectangle(img, xy1, xy2, bod_col, -1)
+                elif a[x][y] == "@":
+                    cv.rectangle(img, xy1, xy2, apl_col, -1)
                 elif a[x][y] == 4:
-                    cv.rectangle(img,(x1,y1),(x2,y2),sh_col,-1)
+                    cv.rectangle(img, xy1, xy2, sh_col, -1)
                 else:
-                    cv.rectangle(img,(x1,y1),(x2,y2),not_fill,a[x][y])
+                    cv.rectangle(img, xy1, xy2, not_fill, 0)
         cv.imshow("img", img)
         print(a)
-        a = np.array([[0 for y in range(n)]for x in range(n)])
+        a = np.array([["." for y in range(n)]for x in range(n)])
         if cv.waitKey(1) & 0xFF == ord('2'):
             break
 
@@ -168,12 +163,13 @@ while 1:
                 del path[-1]
             pass
 
-    pos, mo = rand_st(pos,n,path[1:],look2,0.00)
+    #pos, mo = rand_st(pos,n,path[1:],look2,0.00)
 
-    for _ in range(0):
+    for _ in range(1):
         with keyboard.Listener(on_press=on_press,on_release=on_release) as listener:
             listener.join()
-        pos, mo = check(press,pos,n,path[1:],look2)
+            print(press)
+            pos, mo = check(press,pos,n,path[1:],look2)
 
     if mo == True:
         path = move2(path,pos)
@@ -195,10 +191,10 @@ while 1:
             pass
 
     pos = [pos[0]%n,pos[1]%n]
-    a[pos[0]][pos[1]]=1
+    a[pos[0]][pos[1]]="#"
     for i in path[1:-1]:
         if path[0]!=0:
-            a[i[0]][i[1]]=2
+            a[i[0]][i[1]]="0"
 
     
     
