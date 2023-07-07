@@ -2,4 +2,4 @@
 
 It's possible to use keyboard, by default the it playes itself
 
-![image](https://github.com/0dminnimda/Snake_game/preview.png)
+![preview](https://github.com/0dminnimda/Snake_game/blob/master/preview.png?raw=true)
